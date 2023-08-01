@@ -116,11 +116,13 @@ export function protoType(
     throw new Error("cannot import protobuf primitive types");
   }
   let proto = origProtoType;
-  const chunks = [proto.name];
+
+  const chunks = [protoName(proto, opts)];
   while (proto.parent.kind !== "File") {
     proto = proto.parent;
-    chunks.unshift(proto.name);
+    chunks.unshift(protoName(proto, opts));
   }
+
   switch (opts.protobuf) {
     case "google-protobuf": {
       return code`${imp(`${chunks[0]}@${protoImportPath(proto, opts)}`)}${chunks
@@ -149,6 +151,23 @@ export function protoType(
       throw "unreachable";
     }
   }
+}
+
+const builtInNamesTsProto = ['Date'];
+
+function protoName(proto: ProtoMessage | ProtoEnum, opts: PrinterOptions): string {
+  if (opts.protobuf !== "ts-proto") {
+    return proto.name;
+  }
+
+  if (proto.kind === "Enum") {
+    return proto.name;
+  }
+
+  const { name } = proto;
+  // ts-proto adds suffixes like `Date` to avoid conflicts.
+  // https://github.com/stephenh/ts-proto/blob/5fb444ea312117539030c639ab35b3f90d2dd5e7/src/visit.ts#L61-L67
+  return builtInNamesTsProto.includes(name) ? `${name}Message` : name;
 }
 
 export function createGetFieldValueCode(

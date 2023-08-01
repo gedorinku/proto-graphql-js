@@ -8,9 +8,9 @@ exports[`custom types generates pothos DSLs: custom_types/date.pb.pothos.ts 1`] 
 
 import { InputObjectRef } from "@pothos/core";
 import { builder } from "../../builder";
-import { Date } from "./testapis/custom_types/date";
+import { DateMessage } from "./testapis/custom_types/date";
 
-export const Date$Ref = builder.objectRef<Date>("Date");
+export const Date$Ref = builder.objectRef<DateMessage>("Date");
 builder.objectType(Date$Ref, {
   name: "Date",
   fields: (t) => ({
@@ -31,7 +31,7 @@ builder.objectType(Date$Ref, {
     }),
   }),
   isTypeOf: (source) => {
-    return (source as Date | { $type: string & {}; }).$type ===
+    return (source as DateMessage | { $type: string & {}; }).$type ===
       "testapis.custom_types.Date";
   },
   extensions: {
@@ -44,9 +44,9 @@ builder.objectType(Date$Ref, {
 });
 
 export type DateInput$Shape = {
-  year: Date["year"];
-  month: Date["month"];
-  day: Date["day"];
+  year: DateMessage["year"];
+  month: DateMessage["month"];
+  day: DateMessage["day"];
 };
 
 export const DateInput$Ref: InputObjectRef<DateInput$Shape> = builder.inputRef<
